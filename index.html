@@ -471,7 +471,7 @@ select.field option{background:#fff;color:var(--navy)}
   box-shadow:0 2px 0 rgba(180,0,60,.18);
 }
 .match-item{
-  display:flex;align-items:center;gap:8px;
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
   padding:8px 11px;background:var(--bg2);
   border:2px solid rgba(255,255,255,.9);border-radius:11px;
   margin-bottom:6px;font-size:.83rem;font-weight:700;
@@ -555,6 +555,52 @@ select.field option{background:#fff;color:var(--navy)}
   box-shadow:0 7px 0 rgba(0,160,180,.22),0 12px 30px rgba(0,212,232,.14);
 }
 
+.cat-entry-block{margin-bottom:4px}
+.cat-time-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.time-field{width:140px;font-family:var(--fm);font-weight:700;padding:7px 12px;flex-shrink:0}
+.time-hint{font-size:.7rem;font-weight:800;color:var(--muted2);font-family:var(--fm);white-space:nowrap}
+
+/* Match item — score boxes + time */
+.match-time{
+  font-family:var(--fm);font-size:.7rem;font-weight:700;
+  color:var(--cyan-d);background:var(--cyan-pale);
+  padding:2px 7px;border-radius:6px;flex-shrink:0;
+  box-shadow:0 2px 0 rgba(0,160,180,.18);min-width:52px;text-align:center;
+}
+.score-box{
+  width:34px;height:26px;
+  background:#fff;border:2px solid rgba(26,39,68,.1);
+  border-radius:7px;flex-shrink:0;display:inline-block;
+  box-shadow:inset 0 2px 4px rgba(26,39,68,.05);
+}
+.ko-time{
+  font-family:var(--fm);font-size:.62rem;font-weight:700;
+  color:var(--gold-d);margin-left:6px;
+}
+.cat-entry-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.cat-entry-sub{font-size:.78rem;font-weight:800;color:var(--muted2)}
+.cat-entry-list{margin-bottom:4px}
+
+/* Soft category add buttons */
+.btn-purple-soft{
+  background:linear-gradient(145deg,#F0E4FF,#E2CEFF);color:#6A10B8;
+  border:2px solid rgba(140,60,230,.25);
+  box-shadow:0 4px 0 rgba(120,40,210,.2),0 6px 14px rgba(160,80,240,.15);
+}
+.btn-purple-soft:hover{transform:translateY(-2px);box-shadow:0 6px 0 rgba(100,20,180,.25),0 10px 20px rgba(160,80,240,.2)}
+.btn-green-soft{
+  background:linear-gradient(145deg,var(--lime-pale),#D8F080);color:#506000;
+  border:2px solid rgba(157,184,0,.3);
+  box-shadow:0 4px 0 rgba(120,150,0,.22),0 6px 14px rgba(200,230,48,.18);
+}
+.btn-green-soft:hover{transform:translateY(-2px);box-shadow:0 6px 0 rgba(100,130,0,.28),0 10px 20px rgba(200,230,48,.25)}
+.btn-red-soft{
+  background:linear-gradient(145deg,#FFE8EE,#FFCEDD);color:var(--pink-d);
+  border:2px solid rgba(255,42,122,.25);
+  box-shadow:0 4px 0 rgba(180,0,60,.2),0 6px 14px rgba(255,42,122,.15);
+}
+.btn-red-soft:hover{transform:translateY(-2px);box-shadow:0 6px 0 rgba(160,0,50,.25),0 10px 20px rgba(255,42,122,.2)}
+
 /* ─── Spinner ─── */
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{
@@ -607,43 +653,86 @@ select.field option{background:#fff;color:var(--navy)}
       <div class="card-title">
         <div class="step-badge">1</div>
         <div>
-          <h2>Configure Draw</h2>
-          <p>Select mode and register participants</p>
+          <h2>Register Pairs</h2>
+          <p>Add pairs to each category, then generate the draw</p>
         </div>
       </div>
     </div>
 
-    <div class="section-label">Play Mode</div>
-    <div class="mode-toggle">
-      <button class="mode-btn active" id="btn-singles" onclick="setMode('singles')">Singles</button>
-      <button class="mode-btn"        id="btn-doubles" onclick="setMode('doubles')">Doubles</button>
+    <!-- MixedBees -->
+    <div class="cat-entry-block">
+      <div class="cat-entry-header">
+        <span class="badge badge-purple" style="font-size:.82rem;padding:6px 14px">MixedBees</span>
+        <span class="cat-entry-sub">Mixed Doubles · 6 pairs max</span>
+      </div>
+      <div class="cat-time-row">
+        <label class="section-label" style="margin:0">Start Time</label>
+        <input class="field time-field" type="time" id="time-mixedBees"
+          oninput="S.times['mixedBees']=this.value"
+          placeholder="19:00" title="First game start time"/>
+        <span class="time-hint">15 min / game</span>
+      </div>
+      <div id="list-mixedBees" class="cat-entry-list"></div>
+      <div class="actions-bar">
+        <button class="btn btn-purple-soft" id="btn-add-mixedBees" onclick="addEntry('mixedBees')">+ Add Pair</button>
+        <button class="btn btn-pink" id="btn-lm-mixedBees" onclick="addLM('mixedBees')" style="display:none">+ Last Minute</button>
+        <span class="slot-counter" id="slot-ctr-mixedBees"><strong>0</strong> / 6 pairs</span>
+      </div>
     </div>
 
     <div class="divider"></div>
 
-    <div id="singles-section">
-      <div class="section-label">Player Entries</div>
-      <div id="singles-list"></div>
+    <!-- NewBee -->
+    <div class="cat-entry-block">
+      <div class="cat-entry-header">
+        <span class="badge badge-green" style="font-size:.82rem;padding:6px 14px">NewBee</span>
+        <span class="cat-entry-sub">Beginner · 8 pairs max</span>
+      </div>
+      <div class="cat-time-row">
+        <label class="section-label" style="margin:0">Start Time</label>
+        <input class="field time-field" type="time" id="time-newBee"
+          oninput="S.times['newBee']=this.value"
+          placeholder="19:00" title="First game start time"/>
+        <span class="time-hint">15 min / game</span>
+      </div>
+      <div id="list-newBee" class="cat-entry-list"></div>
+      <div class="actions-bar">
+        <button class="btn btn-green-soft" id="btn-add-newBee" onclick="addEntry('newBee')">+ Add Pair</button>
+        <button class="btn btn-pink" id="btn-lm-newBee" onclick="addLM('newBee')" style="display:none">+ Last Minute</button>
+        <span class="slot-counter" id="slot-ctr-newBee"><strong>0</strong> / 8 pairs</span>
+      </div>
     </div>
-    <div id="doubles-section" style="display:none">
-      <div class="section-label">Pair Entries</div>
-      <div id="doubles-list"></div>
+
+    <div class="divider"></div>
+
+    <!-- StingerRallyBee -->
+    <div class="cat-entry-block">
+      <div class="cat-entry-header">
+        <span class="badge badge-red" style="font-size:.82rem;padding:6px 14px">StingerRallyBee</span>
+        <span class="cat-entry-sub">Intermediate / Pro · 8 pairs max</span>
+      </div>
+      <div class="cat-time-row">
+        <label class="section-label" style="margin:0">Start Time</label>
+        <input class="field time-field" type="time" id="time-stingerRallyBee"
+          oninput="S.times['stingerRallyBee']=this.value"
+          placeholder="19:00" title="First game start time"/>
+        <span class="time-hint">15 min / game</span>
+      </div>
+      <div id="list-stingerRallyBee" class="cat-entry-list"></div>
+      <div class="actions-bar">
+        <button class="btn btn-red-soft" id="btn-add-stingerRallyBee" onclick="addEntry('stingerRallyBee')">+ Add Pair</button>
+        <button class="btn btn-pink" id="btn-lm-stingerRallyBee" onclick="addLM('stingerRallyBee')" style="display:none">+ Last Minute</button>
+        <span class="slot-counter" id="slot-ctr-stingerRallyBee"><strong>0</strong> / 8 pairs</span>
+      </div>
     </div>
 
     <div id="alert-area"></div>
-
-    <div class="actions-bar">
-      <button class="btn btn-cyan" id="btn-add" onclick="addEntry()"><span id="add-lbl">Add Player</span></button>
-      <button class="btn btn-pink" id="btn-lm"  onclick="addLM()"   style="display:none">+ Last Minute Entry</button>
-      <span class="slot-counter" id="slot-ctr"><strong>0</strong> / 20 slots</span>
-    </div>
-
     <div class="divider"></div>
 
     <div class="gen-row">
       <div>
         <h3>Ready to Generate?</h3>
-        <p style="margin-top:5px">Players auto categorised and courts seeded by DUPR rating.</p>
+        <p style="margin-top:5px">Each category draws independently with round-robin and knockout stages.</p>
       </div>
       <button class="btn btn-lime btn-lg" onclick="generateDraw()">Generate Draw</button>
     </div>
@@ -680,120 +769,103 @@ select.field option{background:#fff;color:var(--navy)}
    PICKLEBEE — DUPR NIGHT DRAW SYSTEM  v3.0
    Claymorphism Edition
 ════════════════════════════════════════════════ */
-const THRESH=3.5, MAX_M=4, LIMIT=20;
+const MAX_M=4;
+/* ── Category definitions ─────────────────────────────
+   MixedBees       : Mixed Doubles      — 6 pairs max
+   NewBee          : Beginner           — 8 pairs max
+   StingerRallyBee : Intermediate/Pro   — 8 pairs max
+──────────────────────────────────────────────────────── */
 const CATS={
-  stinger: {label:'Stinger Bee Pro',  badge:'badge-red',    desc:'DUPR >= 3.5',      pdfC:[200,30,90]},
-  newRally:{label:'New Rally Bee',    badge:'badge-green',  desc:'DUPR < 3.5',        pdfC:[90,150,20]},
-  mixed:   {label:'Mixed Doubles',   badge:'badge-purple', desc:'Any pair with F',   pdfC:[120,50,210]},
+  mixedBees:       {label:'MixedBees',       sublabel:'Mixed Doubles',    badge:'badge-purple', desc:'Mixed Doubles',         pdfC:[120,50,210],  limit:6},
+  newBee:          {label:'NewBee',          sublabel:'Beginner',         badge:'badge-green',  desc:'Beginner Pairs',        pdfC:[90,150,20],   limit:8},
+  stingerRallyBee: {label:'StingerRallyBee', sublabel:'Intermediate/Pro', badge:'badge-red',    desc:'Intermediate & Pro',    pdfC:[200,30,90],   limit:8},
 };
-const S={mode:'singles',entries:[],nid:1,draw:null};
+const CAT_KEYS = ['mixedBees','newBee','stingerRallyBee'];
+const S={
+  cats:  { mixedBees:[], newBee:[], stingerRallyBee:[] },
+  times: { mixedBees:'', newBee:'', stingerRallyBee:'' },
+  nid:1, draw:null
+};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const fR=r=>{const v=parseFloat(r);return isNaN(v)?'':v.toFixed(2)};
 function uid(){return S.nid++}
-
-function avgR(e){
-  return S.mode==='singles'?parseFloat(e.rating)||0:
-    ((parseFloat(e.p1.rating)||0)+(parseFloat(e.p2.rating)||0))/2;
-}
-function dName(e){
-  return S.mode==='singles'?e.name||'(unnamed)':`${e.p1.name||'?'} & ${e.p2.name||'?'}`;
-}
-function pairCat(e){
-  if(e.p1.gender==='F'||e.p2.gender==='F')return'mixed';
-  return avgR(e)>=THRESH?'stinger':'newRally';
-}
+/* No DUPR ratings — avgR always returns 0, fR always returns '' */
+function avgR(e){ return 0; }
+function fR(){ return ''; }
+function dName(e){ return `${e.p1||'?'} & ${e.p2||'?'}`; }
 
 /* ── Mode ── */
-function setMode(m){
-  if(S.mode===m)return;
-  S.mode=m;S.entries=[];S.nid=1;S.draw=null;
-  $('btn-singles').classList.toggle('active',m==='singles');
-  $('btn-doubles').classList.toggle('active',m==='doubles');
-  $('singles-section').style.display=m==='singles'?'':'none';
-  $('doubles-section').style.display=m==='doubles'?'':'none';
-  $('add-lbl').textContent=m==='singles'?'Add Player':'Add Pair';
-  $('draw-card').style.display='none';
-  renderAll();
+/* ── Per-category entry management ── */
+function addEntry(catKey, lm=false){
+  const limit = CATS[catKey].limit;
+  if(S.cats[catKey].length >= limit && !lm){ updateBtns(); return; }
+  S.cats[catKey].push({id:uid(), p1:'', p2:'', lm, cat:catKey});
+  renderCat_UI(catKey);
+  updateBtns();
+  clrAlert();
+}
+function addLM(catKey){ addEntry(catKey, true); }
+function removeEntry(catKey, id){
+  S.cats[catKey] = S.cats[catKey].filter(e=>e.id!==id);
+  renderCat_UI(catKey);
+  updateBtns();
+}
+function upd(catKey, id, field, val){
+  const e = S.cats[catKey].find(x=>x.id===id);
+  if(e) e[field] = val;
 }
 
-/* ── Entries ── */
-function addEntry(lm=false){
-  if(S.entries.length>=LIMIT&&!lm){updateBtns();return}
-  S.mode==='singles'
-    ?S.entries.push({id:uid(),name:'',rating:'',lm})
-    :S.entries.push({id:uid(),p1:{name:'',gender:'M',rating:''},p2:{name:'',gender:'M',rating:''},lm});
-  renderAll();
-}
-function addLM(){addEntry(true)}
-function removeEntry(id){S.entries=S.entries.filter(e=>e.id!==id);renderAll()}
-function upd(id,f,v){
-  const e=S.entries.find(x=>x.id===id);if(!e)return;
-  f.includes('.')?([...f.split('.')].reduce((o,k,i,a)=>i<a.length-1?o[k]:(o[k]=v,o),e)):e[f]=v;
-}
+/* ── Render all 3 category lists ── */
+function renderAll(){ CAT_KEYS.forEach(k=>renderCat_UI(k)); updateBtns(); clrAlert(); }
 
-/* ── Render lists ── */
-function renderAll(){S.mode==='singles'?renderS():renderD();updateBtns();clrAlert()}
-
-function renderS(){
-  const el=$('singles-list');
-  if(!S.entries.length){el.innerHTML=`<div class="empty-state"><span class="empty-icon">&#9675;</span><p>No players yet — click <strong>Add Player</strong> to begin</p></div>`;return}
-  el.innerHTML=S.entries.map((e,i)=>`
-    <div class="s-row">
-      <span class="row-num">${i+1}${e.lm?'<span class="lm-tag">LM</span>':''}</span>
-      <input class="field" type="text" placeholder="Player name" value="${esc(e.name)}"
-        data-fld="sname" data-id="${e.id}" onkeydown="navKey(event,this)" oninput="upd(${e.id},'name',this.value)"/>
-      <input class="field field-num" type="number" placeholder="DUPR Rating"
-        min="1" max="8" step="0.01" value="${esc(e.rating)}"
-        data-fld="srating" data-id="${e.id}" onkeydown="navKey(event,this)" oninput="upd(${e.id},'rating',this.value)"/>
-      <button class="btn btn-del" onclick="removeEntry(${e.id})" title="Remove">X</button>
-    </div>`).join('');
-}
-
-function renderD(){
-  const el=$('doubles-list');
-  if(!S.entries.length){el.innerHTML=`<div class="empty-state"><span class="empty-icon">&#9675;</span><p>No pairs yet — click <strong>Add Pair</strong> to begin</p></div>`;return}
-  el.innerHTML=S.entries.map((e,i)=>`
+/* ── Per-category UI renderer ── */
+function renderCat_UI(catKey){
+  const el   = $('list-'+catKey);
+  const list = S.cats[catKey];
+  if(!list.length){
+    el.innerHTML=`<div class="empty-state">
+      <span class="empty-icon">&#9675;</span>
+      <p>No pairs yet — click <strong>Add Pair</strong> to begin</p>
+    </div>`;
+    return;
+  }
+  el.innerHTML=list.map((e,i)=>`
     <div class="d-row">
       <span class="row-num">${i+1}${e.lm?'<span class="lm-tag">LM</span>':''}</span>
       <div class="pair-fields">
         <div class="player-inner">
           <span class="p-label">P1</span>
-          <input class="field" type="text" placeholder="Player 1 name" value="${esc(e.p1.name)}"
-            data-fld="p1name" data-id="${e.id}" onkeydown="navKey(event,this)" oninput="upd(${e.id},'p1.name',this.value)"/>
-          <select class="field field-gender" onchange="upd(${e.id},'p1.gender',this.value)">
-            <option value="M" ${e.p1.gender==='M'?'selected':''}>M</option>
-            <option value="F" ${e.p1.gender==='F'?'selected':''}>F</option>
-          </select>
-          <input class="field field-num" type="number" placeholder="DUPR Rating"
-            min="1" max="8" step="0.01" value="${esc(e.p1.rating)}"
-            data-fld="p1rating" data-id="${e.id}" onkeydown="navKey(event,this)" oninput="upd(${e.id},'p1.rating',this.value)"/>
+          <input class="field" type="text" placeholder="Player 1 name" value="${esc(e.p1)}"
+            data-fld="p1" data-id="${e.id}" data-cat="${catKey}"
+            onkeydown="navKey(event,this)"
+            oninput="upd('${catKey}',${e.id},'p1',this.value)"/>
         </div>
         <div class="pair-amp">&amp;</div>
         <div class="player-inner">
           <span class="p-label">P2</span>
-          <input class="field" type="text" placeholder="Player 2 name" value="${esc(e.p2.name)}"
-            data-fld="p2name" data-id="${e.id}" onkeydown="navKey(event,this)" oninput="upd(${e.id},'p2.name',this.value)"/>
-          <select class="field field-gender" onchange="upd(${e.id},'p2.gender',this.value)">
-            <option value="M" ${e.p2.gender==='M'?'selected':''}>M</option>
-            <option value="F" ${e.p2.gender==='F'?'selected':''}>F</option>
-          </select>
-          <input class="field field-num" type="number" placeholder="DUPR Rating"
-            min="1" max="8" step="0.01" value="${esc(e.p2.rating)}"
-            data-fld="p2rating" data-id="${e.id}" onkeydown="navKey(event,this)" oninput="upd(${e.id},'p2.rating',this.value)"/>
+          <input class="field" type="text" placeholder="Player 2 name" value="${esc(e.p2)}"
+            data-fld="p2" data-id="${e.id}" data-cat="${catKey}"
+            onkeydown="navKey(event,this)"
+            oninput="upd('${catKey}',${e.id},'p2',this.value)"/>
         </div>
       </div>
-      <button class="btn btn-del" onclick="removeEntry(${e.id})" title="Remove">X</button>
+      <button class="btn btn-del" onclick="removeEntry('${catKey}',${e.id})" title="Remove">X</button>
     </div>`).join('');
 }
 
+/* ── Per-category slot counters ── */
 function updateBtns(){
-  const n=S.entries.length,at=n>=LIMIT;
-  $('btn-add').style.display=at?'none':'';
-  $('btn-lm').style.display=at?'':'none';
-  $('slot-ctr').innerHTML=n>LIMIT
-    ?`<strong>${n}</strong> entries <span style="color:var(--muted2)">(${LIMIT}+${n-LIMIT}&nbsp;LM)</span>`
-    :`<strong>${n}</strong> / ${LIMIT} slots`;
+  CAT_KEYS.forEach(k=>{
+    const n     = S.cats[k].length;
+    const limit = CATS[k].limit;
+    const at    = n >= limit;
+    $('btn-add-'+k).style.display  = at ? 'none' : '';
+    $('btn-lm-'+k).style.display   = at ? '' : 'none';
+    const over  = n > limit;
+    $('slot-ctr-'+k).innerHTML = over
+      ? `<strong>${n}</strong> pairs <span style="color:var(--muted2)">(${limit}+${n-limit}&nbsp;LM)</span>`
+      : `<strong>${n}</strong> / ${limit} pairs`;
+  });
 }
 function showAlert(t,m){$('alert-area').innerHTML=`<div class="alert alert-${t}">${m}</div>`}
 function clrAlert(){$('alert-area').innerHTML=''}
@@ -823,118 +895,163 @@ function clrAlert(){$('alert-area').innerHTML=''}
       Empty / skipped.
 ────────────────────────────────────────────────────────── */
 
+/* ─────────────────────────────────────────────────────────────
+   DRAW LOGIC v4  — Fixed court split, anti-consecutive
+   scheduling, consolation match, start-time slots
+ ──────────────────────────────────────────────────────────── */
+
+/* Split n pairs across 2 courts by registration order (snake).
+   Larger half always goes to Court N. */
 function splitCourts(list){
-  const s=[...list].sort((a,b)=>avgR(b)-avgR(a)),N=[],B=[];
-  s.forEach((x,i)=>i%2===0?N.push(x):B.push(x));return{N,B};
+  const N=[],B=[];
+  list.forEach((x,i)=>i%2===0?N.push(x):B.push(x));
+  return{N,B};
 }
 
-/* Full round-robin, no per-player cap (used for combined/3-player pools) */
+/* Full round-robin from pts array */
 function buildRRFull(pts){
   const ms=[];
   for(let i=0;i<pts.length;i++)
     for(let j=i+1;j<pts.length;j++)
-      ms.push({num:ms.length+1,p1:pts[i],p2:pts[j]});
+      ms.push({p1:pts[i],p2:pts[j]});
   return ms;
 }
 
-/* Standard capped round-robin (max MAX_M matches per player) */
-function buildRR(pts){
-  const cnt=pts.map(()=>0),ms=[];
-  for(let i=0;i<pts.length;i++)
-    for(let j=i+1;j<pts.length;j++)
-      if(cnt[i]<MAX_M&&cnt[j]<MAX_M){ms.push({num:ms.length+1,p1:pts[i],p2:pts[j]});cnt[i]++;cnt[j]++}
-  return ms;
+/* Anti-consecutive scheduler:
+   Reorders matches so no pair appears in 3+ consecutive slots. */
+function scheduleAC(rawMatches){
+  const pool = rawMatches.map((m,i)=>({...m,_idx:i}));
+  const result=[];
+
+  while(pool.length>0){
+    /* Determine which pairs played in the last 2 scheduled matches */
+    const blockedIds = new Set();
+    if(result.length>=2){
+      const prev2=[result[result.length-2],result[result.length-1]];
+      prev2.forEach(m=>{
+        // Count how many of the last 2 this pair appeared in
+        [m.p1,m.p2].forEach(p=>{
+          const id=p.id;
+          const inBoth=prev2.every(x=>x.p1.id===id||x.p2.id===id);
+          if(inBoth) blockedIds.add(id);
+        });
+      });
+    }
+
+    /* Find the earliest pool match that doesn't use a blocked pair */
+    let pick=-1;
+    for(let i=0;i<pool.length;i++){
+      const m=pool[i];
+      if(!blockedIds.has(m.p1.id)&&!blockedIds.has(m.p2.id)){
+        pick=i; break;
+      }
+    }
+    /* If no valid pick exists (all remaining involve blocked pairs),
+       just take the first — can't fully satisfy the constraint */
+    if(pick===-1) pick=0;
+
+    const m=pool.splice(pick,1)[0];
+    result.push({...m, num:result.length+1});
+  }
+  return result;
 }
 
-/* Min matches possible for n players in a capped RR */
-function minMatchesPerPlayer(n){
-  if(n<=1)return 0;
-  if(n===2)return 1;
-  return Math.min(MAX_M,n-1);
+/* Build a scheduled round-robin for a court, applying anti-consecutive */
+function buildCourtRR(pts){
+  const raw=buildRRFull(pts);
+  return scheduleAC(raw);
 }
 
-/* Does a court have enough players for ≥3 matches each? */
-function courtCanPlay3(players){
-  if(players.length<3)return false;
-  return minMatchesPerPlayer(players.length)>=3;
+/* Time helper: add matchIndex * 15 minutes to a HH:MM base time */
+function fmtSlotTime(baseTime, slotIdx){
+  if(!baseTime) return '';
+  const [h,m] = baseTime.split(':').map(Number);
+  const total  = h*60 + m + slotIdx*15;
+  const hh     = Math.floor(total/60)%24;
+  const mm     = total%60;
+  const ap     = hh>=12?'pm':'am';
+  const h12    = hh%12||12;
+  return `${h12}:${mm.toString().padStart(2,'0')}${ap}`;
 }
 
-function buildCat(pts,cat){
-  /* ── Edge: 0 or 1 player ── */
-  if(!pts||pts.length===0) return{...cat,empty:true,singlePair:false,count:0};
+function buildCat(pts, cat, startTime){
+  /* ── 0 pairs ── */
+  if(!pts||pts.length===0) return{...cat,empty:true,count:0,startTime};
+
+  /* ── 1 pair ── */
   if(pts.length===1){
-    /* All categories: show the single entry with a contextual notice */
-    const isSinglesMode = S.mode==='singles';
-    const isMixed       = cat.label==='Mixed Doubles';
-    const noticeMsg = isSinglesMode
-      ? 'At least 1 more player is needed to play a single game.'
-      : isMixed
-        ? 'At least 1 more pair is needed to play a single game of Mixed Doubles.'
-        : 'At least 1 more pair is needed to play a doubles game.';
-    const headerLbl = isSinglesMode ? 'Registered Player' : 'Registered Pair';
-    return{...cat,empty:false,singlePair:true,count:1,
-      singlePairEntry:pts[0], singleNotice:noticeMsg, singleHeader:headerLbl};
+    const isMixed=cat.label==='MixedBees';
+    return{...cat,empty:false,singlePair:true,count:1,startTime,
+      singlePairEntry:pts[0],singleHeader:'Registered Pair',
+      singleNotice: isMixed
+        ?'At least 1 more pair is needed to play a single game of Mixed Doubles.'
+        :'At least 1 more pair is needed to play a doubles game.'};
   }
 
-  /* ── Exactly 3: straight round-robin, no knockout ── */
+  /* ── 2 pairs (single match, direct semi-final equivalent) ── */
+  if(pts.length===2){
+    return{...cat,empty:false,mode:'two',count:2,startTime,
+      players:pts,
+      matches:buildCourtRR(pts),
+      semis:[],
+      final:{label:'Final',p1:pts[0]?dName(pts[0]):'Pair 1',p2:pts[1]?dName(pts[1]):'Pair 2'}};
+  }
+
+  /* ── 3 pairs total: 1 court, straight RR, no consolation needed (Rank1 wins) ── */
   if(pts.length===3){
-    const sorted=[...pts].sort((a,b)=>avgR(b)-avgR(a));
-    const matches=buildRRFull(sorted);
-    return{...cat,empty:false,mode3:true,count:3,
-      players:sorted,matches,
-      semis:[],final:{label:'Final',p1:'Winner Semi 1',p2:'Winner Semi 2'}};
+    return{...cat,empty:false,mode:'three',count:3,startTime,
+      players:pts,
+      matches:buildCourtRR(pts),
+      semis:[{label:'Semi Final',p1:'Rank 1',p2:'Rank 2'}],
+      final:{label:'Final',p1:'Winner',p2:'Runner Up'}};
   }
 
-  /* ── Standard split ── */
+  /* ── 4+ pairs: ALWAYS split 2 courts — each court plays own full RR ── */
   const{N,B}=splitCourts(pts);
-  const nCanPlay=courtCanPlay3(N);
-  const bCanPlay=courtCanPlay3(B);
 
-  if(nCanPlay && bCanPlay){
-    /* ── Scenario A: both courts viable ── */
-    return{...cat,empty:false,mode:'standard',count:pts.length,
-      cN:{players:N,matches:buildRR(N)},
-      cB:{players:B,matches:buildRR(B)},
-      semis:[{label:'Semi Final 1',p1:'Rank 1  Court N',p2:'Rank 2  Court B'},
-             {label:'Semi Final 2',p1:'Rank 2  Court N',p2:'Rank 1  Court B'}],
-      final:{label:'Final',p1:'Winner Semi 1',p2:'Winner Semi 2'}};
-  }
+  /* Consolation: if a court has ≤3 pairs, pairs only get ≤2 RR games.
+     Add a cross-court 3rd-place match (Rank N3 vs Rank B3) to give
+     those pairs a 3rd game. */
+  const needsConsolation = N.length<=3 || B.length<=3;
 
-  /* ── Scenario B: combine courts ── */
-  const sorted=[...pts].sort((a,b)=>avgR(b)-avgR(a));
-  const allMatches=buildRRFull(sorted);
+  const cNMatches = buildCourtRR(N);
+  const cBMatches = buildCourtRR(B);
 
-  /* Distribute matches across both courts for simultaneous play */
-  const cNMatches=[],cBMatches=[];
-  allMatches.forEach((m,i)=>{
-    (i%2===0?cNMatches:cBMatches).push({...m});
-  });
+  /* Time offsets: both courts run in parallel, longest court sets total slots */
+  const maxRR = Math.max(cNMatches.length, cBMatches.length);
 
-  return{...cat,empty:false,mode:'combined',count:pts.length,
-    players:sorted,
-    cNMatches,cBMatches,
-    allMatches,
-    semis:[{label:'Semi Final 1 (Court N)',p1:'Rank 1',p2:'Rank 4'},
-           {label:'Semi Final 2 (Court B)',p1:'Rank 2',p2:'Rank 3'}],
-    final:{label:'Final',p1:'Winner Semi 1',p2:'Winner Semi 2'}};
+  return{...cat,empty:false,mode:'standard',count:pts.length,startTime,
+    cN:{players:N,matches:cNMatches},
+    cB:{players:B,matches:cBMatches},
+    maxRRSlots:maxRR,
+    needsConsolation,
+    /* Knockout slots start after all RR slots */
+    consolation: needsConsolation
+      ?{label:'3rd Place (Court N)',p1:'Rank N3',p2:'Rank B3',slot:maxRR}
+      :null,
+    semis:[
+      {label:'Semi Final 1  (Court N)',p1:'Rank 1  Court N',p2:'Rank 2  Court B',slot:maxRR+(needsConsolation?1:0)},
+      {label:'Semi Final 2  (Court B)',p1:'Rank 1  Court B',p2:'Rank 2  Court N',slot:maxRR+(needsConsolation?1:0)},
+    ],
+    final:{label:'Final',p1:'Winner Semi 1',p2:'Winner Semi 2',
+           slot:maxRR+(needsConsolation?2:1)}
+  };
 }
 
 function generateDraw(){
   clrAlert();
-  if(S.entries.length<2){showAlert('warn',`Add at least 2 ${S.mode==='singles'?'players':'pairs'} to generate a draw.`);return}
-  const ts=new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
-  if(S.mode==='singles'){
-    S.draw={mode:'singles',ts,total:S.entries.length,
-      stinger: buildCat(S.entries.filter(e=>parseFloat(e.rating)>=THRESH),CATS.stinger),
-      newRally:buildCat(S.entries.filter(e=>parseFloat(e.rating)<THRESH), CATS.newRally)};
-  } else {
-    const m={stinger:[],newRally:[],mixed:[]};
-    S.entries.forEach(e=>m[pairCat(e)].push(e));
-    S.draw={mode:'doubles',ts,total:S.entries.length,
-      stinger: buildCat(m.stinger, CATS.stinger),
-      newRally:buildCat(m.newRally,CATS.newRally),
-      mixed:   buildCat(m.mixed,   CATS.mixed)};
+  const total = CAT_KEYS.reduce((s,k)=>s+S.cats[k].length,0);
+  if(total===0){
+    showAlert('warn','Add at least 1 pair to any category before generating the draw.');
+    return;
   }
+  const ts=new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  S.draw={
+    ts, total,
+    mixedBees:       buildCat(S.cats.mixedBees,       CATS.mixedBees,       S.times.mixedBees),
+    newBee:          buildCat(S.cats.newBee,          CATS.newBee,          S.times.newBee),
+    stingerRallyBee: buildCat(S.cats.stingerRallyBee, CATS.stingerRallyBee, S.times.stingerRallyBee),
+  };
   renderDraw();
 }
 
@@ -944,191 +1061,117 @@ function renderDraw(){
   $('draw-card').style.display='';
   $('draw-meta').innerHTML=[
     `<span class="chip">${d.ts}</span>`,
-    `<span class="chip">${d.mode==='singles'?'Singles':'Doubles'}</span>`,
-    `<span class="chip">${d.total} ${d.mode==='singles'?'Players':'Pairs'}</span>`,
+    `<span class="chip">Doubles</span>`,
+    `<span class="chip">${d.total} Pairs Total</span>`,
   ].join('');
-  const cats=d.mode==='singles'?[d.stinger,d.newRally]:[d.stinger,d.newRally,d.mixed];
+  const cats=[d.mixedBees, d.newBee, d.stingerRallyBee];
   $('draw-content').innerHTML=cats.map(renderCat).join('');
   setTimeout(()=>$('draw-card').scrollIntoView({behavior:'smooth',block:'start'}),140);
 }
 
 function renderCat(cat){
-  /* ── Empty / skipped ── */
   if(cat.empty) return`<div class="cat-block">
     <div class="cat-header">
       <span class="badge ${cat.badge}">${cat.label}</span>
       <span class="cat-count">No participants</span>
     </div>
-    <div class="info-notice">No players assigned to <strong>${cat.label}</strong>. Section skipped.</div>
+    <div class="info-notice">No pairs assigned to <strong>${cat.label}</strong>. Section skipped.</div>
   </div>`;
 
-  /* ── Single entry (any category): show participant + notice ── */
-  if(cat.singlePair){
-    const unitWord = S.mode==='singles' ? '1 player registered' : '1 pair registered';
+  if(cat.singlePair) return`<div class="cat-block">
+    <div class="cat-header">
+      <span class="badge ${cat.badge}">${cat.label}</span>
+      <span class="cat-count">1 pair registered · ${cat.sublabel}</span>
+    </div>
+    <div class="court-card" style="border-radius:var(--r)">
+      <div class="court-header court-n">${cat.singleHeader}</div>
+      <div class="court-body">
+        <div class="p-chip"><span>${esc(dName(cat.singlePairEntry))}</span></div>
+        <div class="alert alert-warn" style="margin-top:12px;font-size:.82rem">${cat.singleNotice}</div>
+      </div>
+    </div>
+  </div>`;
+
+  /* 2 or 3 pairs: single-court straight play */
+  if(cat.mode==='two'||cat.mode==='three'){
+    const lbl=cat.mode==='two'?'2 Pairs · Direct Final':'3 Pairs · Round Robin';
     return`<div class="cat-block">
       <div class="cat-header">
         <span class="badge ${cat.badge}">${cat.label}</span>
-        <span class="cat-count">${unitWord}</span>
+        <span class="cat-count">${cat.count} pairs · ${cat.sublabel} · ${lbl}</span>
       </div>
-      <div class="court-card" style="border-radius:var(--r)">
-        <div class="court-header court-n">${cat.singleHeader}</div>
-        <div class="court-body">
-          <div class="p-chip">
-            <span>${esc(dName(cat.singlePairEntry))}</span>
-            <span class="p-rating">${fR(avgR(cat.singlePairEntry))}</span>
-          </div>
-          <div class="alert alert-warn" style="margin-top:12px;font-size:.82rem">
-            ${cat.singleNotice}
-          </div>
-        </div>
-      </div>
+      ${renderSingleCourt(cat)}
     </div>`;
   }
 
-  /* ── Exactly 3 players: straight RR only ── */
-  if(cat.mode3) return`<div class="cat-block">
-    <div class="cat-header">
-      <span class="badge ${cat.badge}">${cat.label}</span>
-      <span class="cat-count">3 participants · ${cat.desc} · Straight Round Robin</span>
-    </div>
-    ${renderCombinedRR(cat,false)}
-  </div>`;
-
-  /* ── Combined courts ── */
-  if(cat.mode==='combined') return`<div class="cat-block">
-    <div class="cat-header">
-      <span class="badge ${cat.badge}">${cat.label}</span>
-      <span class="cat-count">${cat.count} participants · ${cat.desc} · Combined Draw</span>
-    </div>
-    <div class="alert alert-info" style="margin-bottom:16px">
-      Combined draw: not enough players to run separate courts with 3 minimum matches each. 
-      All players compete in one pool with matches distributed across both courts simultaneously.
-    </div>
-    ${renderCombinedRR(cat,true)}
-    ${renderKO(cat)}
-  </div>`;
-
-  /* ── Standard two-court draw ── */
+  /* Standard 2-court draw */
   return`<div class="cat-block">
     <div class="cat-header">
       <span class="badge ${cat.badge}">${cat.label}</span>
-      <span class="cat-count">${cat.count} participants · ${cat.desc}</span>
+      <span class="cat-count">${cat.count} pairs · ${cat.sublabel}${cat.needsConsolation?' · includes 3rd-place game':''}</span>
     </div>
-    <div class="courts-grid">${renderCourt(cat.cN,'N')}${renderCourt(cat.cB,'B')}</div>
+    <div class="courts-grid">${renderCourt(cat.cN,'N',cat)}${renderCourt(cat.cB,'B',cat)}</div>
     ${renderKO(cat)}
   </div>`;
 }
 
-/* Render combined pool for mode3 (no knockout) and combined draw */
-function renderCombinedRR(cat, showCourts){
-  const pHtml = cat.players.map(p=>`
-    <div class="p-chip">
-      <span>${esc(dName(p))}</span>
-      <span class="p-rating">${fR(avgR(p))}</span>
-    </div>`).join('');
-
-  const sRows = cat.players.map(p=>`
-    <tr>
-      <td>${esc(dName(p))}</td>
-      <td>___</td><td>___</td><td>___</td><td>___</td>
-    </tr>`).join('');
-
-  if(!showCourts){
-    /* mode3: single block, no court split */
-    const mHtml = cat.matches.map(m=>`
-      <div class="match-item">
-        <span class="match-num">M${m.num}</span>
-        <span class="match-player">${esc(dName(m.p1))}</span>
-        <span class="match-vs">vs</span>
-        <span class="match-player">${esc(dName(m.p2))}</span>
-      </div>`).join('');
-    return`<div class="court-card" style="border-radius:var(--r)">
-      <div class="court-header court-n">All Players (Round Robin)</div>
-      <div class="court-body">
-        <div class="sub-label">Participants (${cat.players.length})</div>${pHtml}
-        <div class="sub-label mt-sub">Round Robin Schedule · ${cat.matches.length} matches</div>${mHtml}
-        <div class="sub-label mt-sub">Standings — fill in during play</div>
-        <table class="stand-table">
-          <thead><tr><th>Player / Pair</th><th>W</th><th>L</th><th>Pts</th><th>Rank</th></tr></thead>
-          <tbody>${sRows}</tbody>
-        </table>
-      </div>
+/* Render a single-court draw (2 or 3 pairs) */
+function renderSingleCourt(cat){
+  const pHtml = cat.players.map(p=>`<div class="p-chip"><span>${esc(dName(p))}</span></div>`).join('');
+  const sRows = cat.players.map(p=>`<tr><td>${esc(dName(p))}</td><td></td><td></td><td></td><td></td></tr>`).join('');
+  const mHtml = cat.matches.map((m,i)=>{
+    const t=fmtSlotTime(cat.startTime,i);
+    return`<div class="match-item">
+      <span class="match-num">R${m.num}</span>
+      ${t?`<span class="match-time">${t}</span>`:''}
+      <span class="match-player">${esc(dName(m.p1))}</span>
+      <span class="match-vs">vs</span>
+      <span class="match-player">${esc(dName(m.p2))}</span>
+      <span class="score-box"></span>
+      <span class="match-vs">:</span>
+      <span class="score-box"></span>
     </div>`;
-  }
-
-  /* Combined: split matches across Court N and Court B for simultaneous play */
-  const mkMatches = (list) => list.length
-    ? list.map(m=>`
-        <div class="match-item">
-          <span class="match-num">M${m.num}</span>
-          <span class="match-player">${esc(dName(m.p1))}</span>
-          <span class="match-vs">vs</span>
-          <span class="match-player">${esc(dName(m.p2))}</span>
-        </div>`).join('')
-    : `<p class="no-matches">No matches allocated to this court.</p>`;
-
-  return`
-    <div class="courts-grid">
-      <div class="court-card">
-        <div class="court-header court-n">Court N (1) · ${cat.cNMatches.length} matches</div>
-        <div class="court-body">
-          <div class="sub-label">Match Schedule</div>${mkMatches(cat.cNMatches)}
-        </div>
-      </div>
-      <div class="court-card">
-        <div class="court-header court-b">Court B (2) · ${cat.cBMatches.length} matches</div>
-        <div class="court-body">
-          <div class="sub-label">Match Schedule</div>${mkMatches(cat.cBMatches)}
-        </div>
-      </div>
+  }).join('');
+  return`<div class="court-card" style="border-radius:var(--r)">
+    <div class="court-header court-n">All Pairs · ${cat.players.length} pairs</div>
+    <div class="court-body">
+      <div class="sub-label">Participants</div>${pHtml}
+      <div class="sub-label mt-sub">Schedule · ${cat.matches.length} matches</div>${mHtml}
+      <div class="sub-label mt-sub">Standings</div>
+      <table class="stand-table">
+        <thead><tr><th>Pair</th><th>W</th><th>L</th><th>Pts</th><th>Rank</th></tr></thead>
+        <tbody>${sRows}</tbody>
+      </table>
     </div>
-    <div class="court-card" style="border-radius:var(--r);margin-top:14px">
-      <div class="court-header court-n" style="background:linear-gradient(135deg,#F0F4FF,#E4EAFF);border-color:rgba(100,120,200,.2);color:var(--navy)">
-        All Players · Pool Standings
-      </div>
-      <div class="court-body">
-        <div class="sub-label">Participants (${cat.players.length})</div>${pHtml}
-        <div class="sub-label mt-sub">Standings — fill in during play</div>
-        <table class="stand-table">
-          <thead><tr><th>Player / Pair</th><th>W</th><th>L</th><th>Pts</th><th>Rank</th></tr></thead>
-          <tbody>${sRows}</tbody>
-        </table>
-      </div>
-    </div>`;
+  </div>`;
 }
-
-function renderCourt(court,id){
+function renderCourt(court,id,cat){
   const cls=id==='N'?'court-n':'court-b';
-  /* Change 4: show participant count in court header */
   const n=court.players.length;
-  const unit=S.mode==='singles'?'player':'pair';
-  const lbl=id==='N'
-    ?`Court N (1) · ${n} ${unit}${n!==1?'s':''}`
-    :`Court B (2) · ${n} ${unit}${n!==1?'s':''}`;
-
-  const pH=court.players.map(p=>`
-    <div class="p-chip">
-      <span>${esc(dName(p))}</span>
-      <span class="p-rating">${fR(avgR(p))}</span>
-    </div>`).join('');
-  const mH=court.matches.length
-    ?court.matches.map(m=>`
-      <div class="match-item">
-        <span class="match-num">M${m.num}</span>
-        <span class="match-player">${esc(dName(m.p1))}</span>
-        <span class="match-vs">vs</span>
-        <span class="match-player">${esc(dName(m.p2))}</span>
-      </div>`).join('')
-    :`<p class="no-matches">Not enough players for round-robin.</p>`;
-  const sR=court.players.map(p=>`<tr><td>${esc(dName(p))}</td><td>___</td><td>___</td><td>___</td><td>___</td></tr>`).join('');
+  const courtLabel=id==='N'?`Court N (1) · ${n} pair${n!==1?'s':''}`:`Court B (2) · ${n} pair${n!==1?'s':''}`;
+  const pH=court.players.map(p=>`<div class="p-chip"><span>${esc(dName(p))}</span></div>`).join('');
+  const mH=court.matches.map((m,i)=>{
+    const t=fmtSlotTime(cat?cat.startTime:'',i);
+    return`<div class="match-item">
+      <span class="match-num">R${m.num}</span>
+      ${t?`<span class="match-time">${t}</span>`:''}
+      <span class="match-player">${esc(dName(m.p1))}</span>
+      <span class="match-vs">vs</span>
+      <span class="match-player">${esc(dName(m.p2))}</span>
+      <span class="score-box"></span>
+      <span class="match-vs">:</span>
+      <span class="score-box"></span>
+    </div>`;
+  }).join('');
+  const sR=court.players.map(p=>`<tr><td>${esc(dName(p))}</td><td></td><td></td><td></td><td></td></tr>`).join('');
   return`<div class="court-card">
-    <div class="court-header ${cls}">${lbl}</div>
+    <div class="court-header ${cls}">${courtLabel}</div>
     <div class="court-body">
       <div class="sub-label">Participants (${n})</div>${pH}
-      <div class="sub-label mt-sub">Round Robin Schedule · ${court.matches.length} matches</div>${mH}
-      <div class="sub-label mt-sub">Standings — fill in during play</div>
+      <div class="sub-label mt-sub">Round Robin · ${court.matches.length} matches</div>${mH}
+      <div class="sub-label mt-sub">Standings</div>
       <table class="stand-table">
-        <thead><tr><th>Player / Pair</th><th>W</th><th>L</th><th>Pts</th><th>Rank</th></tr></thead>
+        <thead><tr><th>Pair</th><th>W</th><th>L</th><th>Pts</th><th>Rank</th></tr></thead>
         <tbody>${sR}</tbody>
       </table>
     </div>
@@ -1136,21 +1179,32 @@ function renderCourt(court,id){
 }
 
 function renderKO(cat){
-  const koM=(lbl,p1,p2,fin)=>`
+  const koM=(lbl,p1,p2,fin,time)=>`
     <div class="ko-match${fin?' ko-final':''}">
-      <div class="ko-head">${lbl}</div>
+      <div class="ko-head">${lbl}${time?`<span class="ko-time">${time}</span>`:''}</div>
       <div class="ko-body">
         <div class="ko-slot ko-p1">${p1}</div>
         <div class="ko-vs">vs</div>
         <div class="ko-slot ko-p2">${p2}</div>
       </div></div>`;
+  const base=cat.startTime;
+  const mRR=cat.maxRRSlots||0;
+  const nc=cat.needsConsolation;
+  const semi1T=fmtSlotTime(base, mRR+(nc?1:0));
+  const semi2T=fmtSlotTime(base, mRR+(nc?1:0));
+  const finalT=fmtSlotTime(base, mRR+(nc?2:1));
+  const consT =nc?fmtSlotTime(base, mRR):'';
+
   return`<div class="knockout">
     <div class="ko-title">Knockout Stage</div>
+    ${nc&&cat.consolation?`<div class="semis-grid" style="margin-bottom:12px">
+      ${koM('3rd Place · '+cat.consolation.label,cat.consolation.p1,cat.consolation.p2,false,consT)}
+    </div>`:''}
     <div class="semis-grid">
-      ${koM(cat.semis[0].label,cat.semis[0].p1,cat.semis[0].p2,false)}
-      ${koM(cat.semis[1].label,cat.semis[1].p1,cat.semis[1].p2,false)}
+      ${koM(cat.semis[0].label,cat.semis[0].p1,cat.semis[0].p2,false,semi1T)}
+      ${koM(cat.semis[1].label,cat.semis[1].p1,cat.semis[1].p2,false,semi2T)}
     </div>
-    ${koM(cat.final.label+' Bee of the Court!',cat.final.p1,cat.final.p2,true)}
+    ${koM(cat.final.label+' · Bee of the Court!',cat.final.p1,cat.final.p2,true,finalT)}
   </div>`;
 }
 
@@ -1215,20 +1269,20 @@ function buildPDF(){
 
   y=52;
   doc.setFontSize(23);doc.setFont('helvetica','bold');doc.setTextColor(...BK);
-  doc.text(`DUPR Night ${d.mode==='singles'?'Singles':'Doubles'} Draw`,PW/2,y,{align:'center'});
+  doc.text('DUPR Night Draw',PW/2,y,{align:'center'});
   y+=10;
   doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(...MU);
   doc.text(d.ts,PW/2,y,{align:'center'});
 
   y+=14;let cx=M;
-  [`Mode: ${d.mode==='singles'?'Singles':'Doubles'}`,`Total: ${d.total} ${d.mode==='singles'?'Players':'Pairs'}`].forEach(c=>{
+  [`Mode: Doubles`,`Total: ${d.total} Pairs`].forEach(c=>{
     const tw=doc.getTextWidth(c)+12;
     doc.setFillColor(...LG);doc.roundedRect(cx,y-5,tw,9,2,2,'F');
     doc.setFontSize(7.5);doc.setTextColor(...BK);doc.text(c,cx+6,y);cx+=tw+7;
   });
 
   y+=18;
-  const allCats=d.mode==='singles'?[d.stinger,d.newRally]:[d.stinger,d.newRally,d.mixed];
+  const allCats=[d.mixedBees,d.newBee,d.stingerRallyBee];
   allCats.forEach(cat=>{
     doc.setFillColor(248,250,255);doc.setDrawColor(...cat.pdfC);doc.setLineWidth(.7);
     doc.roundedRect(M,y-4,CW,22,2,2,'FD');
@@ -1278,7 +1332,7 @@ function buildPDF(){
     /* ── Single entry (any category) ── */
     if(cat.singlePair){
       /* Participant row */
-      const unitLbl = d.mode==='singles' ? '1 player registered' : '1 pair registered';
+      const unitLbl = '1 pair registered';
       doc.setFillColor(...LG);doc.roundedRect(M,y,CW,8,2,2,'F');
       doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(...MU);
       doc.text(unitLbl.toUpperCase(),M+4,y+5.5);y+=11;
@@ -1317,8 +1371,6 @@ function buildPDF(){
         doc.roundedRect(M,y,CW,7.5,1,1,'F');
         doc.setFontSize(8.5);doc.setFont('helvetica','normal');doc.setTextColor(...BK);
         doc.text(`${pi+1}.  ${dName(p)}`,M+3,y+5.3);
-        doc.setFont('helvetica','bold');doc.setTextColor(...clr);
-        doc.text(`DUPR ${fR(avgR(p))}`,PW-M-3,y+5.3,{align:'right'});
         y+=8.5;
       });y+=4;
       chk(20);sub('Round Robin Schedule',clr);
@@ -1355,74 +1407,14 @@ function buildPDF(){
       return;
     }
 
-    /* ── Combined draw ── */
-    if(cat.mode==='combined'){
-      doc.setFillColor(230,236,255);doc.setDrawColor(100,120,200);doc.setLineWidth(.4);
-      doc.roundedRect(M,y,CW,10,2,2,'FD');
-      doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(50,60,160);
-      doc.text('COMBINED DRAW: Matches distributed across both courts simultaneously',M+4,y+6.5,{maxWidth:CW-8});
-      y+=14;
-
-      /* Pool participants */
-      sub('All Participants',clr);
-      cat.players.forEach((p,pi)=>{
-        chk(9);
-        doc.setFillColor(pi%2===0?248:243,pi%2===0?252:248,pi%2===0?255:252);
-        doc.roundedRect(M,y,CW,7.5,1,1,'F');
-        doc.setFontSize(8.5);doc.setFont('helvetica','normal');doc.setTextColor(...BK);
-        doc.text(`${pi+1}.  ${dName(p)}`,M+3,y+5.3);
-        doc.setFont('helvetica','bold');doc.setTextColor(...clr);
-        doc.text(`DUPR ${fR(avgR(p))}`,PW-M-3,y+5.3,{align:'right'});
-        y+=8.5;
-      });y+=4;
-
-      /* Two-column match schedule: N left, B right */
-      const hw2=(CW-6)/2;
-      [[cat.cNMatches,'Court N (1)',[255,42,122],0],[cat.cBMatches,'Court B (2)',CY,hw2+6]].forEach(([mList,lbl2,cC2,ox])=>{
-        const startY=y;
-        doc.setFillColor(...cC2);doc.roundedRect(M+ox,startY,hw2,8,2,2,'F');
-        doc.setFontSize(8.5);doc.setFont('helvetica','bold');doc.setTextColor(...WH);
-        doc.text(lbl2,M+ox+3,startY+5.5);
-        let cy2=startY+11;
-        mList.forEach(m=>{
-          doc.setFillColor(249,252,255);doc.setDrawColor(...LG);doc.setLineWidth(.15);
-          doc.roundedRect(M+ox,cy2,hw2,7,1,1,'FD');
-          doc.setFontSize(6);doc.setFont('helvetica','bold');doc.setTextColor(...cC2);
-          doc.text(`M${m.num}`,M+ox+1.5,cy2+4.8);
-          doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(...BK);
-          const n1=dName(m.p1),n2=dName(m.p2);
-          const half=hw2/2-4;
-          doc.text(n1,M+ox+9,cy2+4.8,{maxWidth:half});
-          doc.setFont('helvetica','bold');doc.setTextColor(...MU);
-          doc.text('vs',M+ox+hw2/2,cy2+4.8,{align:'center'});
-          doc.setFont('helvetica','normal');doc.setTextColor(...BK);
-          doc.text(n2,M+ox+hw2/2+4,cy2+4.8,{maxWidth:half});
-          cy2+=7.5;
-        });
-        if(ox===0) y=cy2+4;
-      });
-      y+=4;
-
-      /* Pool standings */
-      chk(18+cat.players.length*8);
-      sub('Pool Standings (fill in during play)',clr);
-      doc.autoTable({startY:y,
-        head:[['Player / Pair','W','L','Pts','Rank']],
-        body:cat.players.map(p=>[dName(p),'___','___','___','___']),
-        margin:{left:M,right:M},
-        headStyles:{fillColor:clr,textColor:WH,fontSize:7.5,fontStyle:'bold',halign:'center'},
-        columnStyles:{0:{halign:'left'},1:{halign:'center',cellWidth:14},2:{halign:'center',cellWidth:14},3:{halign:'center',cellWidth:14},4:{halign:'center',cellWidth:14}},
-        bodyStyles:{fontSize:8.5,textColor:BK,lineColor:LG,lineWidth:.25},
-        alternateRowStyles:{fillColor:[245,248,255]},theme:'grid'});
-      y=doc.lastAutoTable.finalY+12;
-    } else {
     /* ── Standard two-court draw ── */
     [[cat.cN,'Court N (1)',[255,42,122]],[cat.cB,'Court B (2)',CY]].forEach(([court,lbl,cC])=>{
       chk(70);
       doc.setFillColor(...cC);doc.roundedRect(M,y,CW,10,2,2,'F');
       doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(...WH);
       /* Change 4: show player count in court label */
-      doc.text(`${lbl}  ·  ${court.players.length} ${court.players.length===1?'player':'players'}`,M+5,y+7);y+=14;
+      const pairCount=`${lbl}  ·  ${court.players.length} pair${court.players.length===1?'':'s'}`;
+      doc.text(pairCount,M+5,y+7);y+=14;
 
       sub('Participants',cC);
       court.players.forEach((p,pi)=>{
@@ -1431,8 +1423,6 @@ function buildPDF(){
         doc.roundedRect(M,y,CW,7.5,1,1,'F');
         doc.setFontSize(8.5);doc.setFont('helvetica','normal');doc.setTextColor(...BK);
         doc.text(`${pi+1}.  ${dName(p)}`,M+3,y+5.3);
-        doc.setFont('helvetica','bold');doc.setTextColor(...cC);
-        doc.text(`DUPR ${fR(avgR(p))}`,PW-M-3,y+5.3,{align:'right'});
         y+=8.5;
       });y+=4;
 
@@ -1441,24 +1431,37 @@ function buildPDF(){
         doc.setFontSize(8);doc.setFont('helvetica','italic');doc.setTextColor(...MU);
         doc.text('Not enough players for round-robin.',M,y+4);y+=10;
       } else {
-        court.matches.forEach(m=>{
+        court.matches.forEach((m,mi)=>{
           chk(9);
           doc.setFillColor(249,252,255);doc.setDrawColor(...LG);doc.setLineWidth(.2);
           doc.roundedRect(M,y,CW,7.5,1,1,'FD');
           doc.setFontSize(6.5);doc.setFont('helvetica','bold');doc.setTextColor(...cC);
           doc.text(`M${m.num}`,M+2.5,y+5.2);
-          doc.setFontSize(8.5);doc.setFont('helvetica','normal');doc.setTextColor(...BK);
-          doc.text(dName(m.p1),M+12,y+5.2);
+          /* Time column */
+          const mIdx=mi;
+          const tSlot=cat.startTime?fmtSlotTime(cat.startTime,mIdx):'';
+          if(tSlot){
+            doc.setFontSize(6.5);doc.setFont('helvetica','bold');doc.setTextColor(...cC);
+            doc.text(tSlot,M+11,y+5.2);
+          }
+          const nameStart=tSlot?M+26:M+12;
+          const half=(PW/2-nameStart-4);
+          doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(...BK);
+          doc.text(dName(m.p1),nameStart,y+5.2,{maxWidth:half});
           doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(...MU);
           doc.text('vs',PW/2,y+5.2,{align:'center'});
-          doc.setFontSize(8.5);doc.setFont('helvetica','normal');doc.setTextColor(...BK);
-          doc.text(dName(m.p2),PW-M-3,y+5.2,{align:'right'});
+          doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(...BK);
+          doc.text(dName(m.p2),PW/2+4,y+5.2,{maxWidth:half});
+          /* Score boxes */
+          doc.setFillColor(245,248,255);doc.setDrawColor(...LG);doc.setLineWidth(.2);
+          doc.roundedRect(PW-M-18,y+1,8,5.5,1,1,'FD');
+          doc.roundedRect(PW-M-8,y+1,8,5.5,1,1,'FD');
           y+=8.5;
         });
       }y+=4;
 
       chk(18+court.players.length*8);
-      sub(`Standings (fill in during play)`,cC);
+      sub('Standings (fill in during play)',cC);
       doc.autoTable({
         startY:y,
         head:[['Player / Pair','W','L','Pts','Rank']],
@@ -1471,8 +1474,7 @@ function buildPDF(){
         theme:'grid',
       });
       y=doc.lastAutoTable.finalY+13;
-    }); /* end standard forEach */
-    } /* end else standard */
+    }); /* end standard court forEach */
 
     chk(65);
     doc.setFillColor(255,252,226);doc.setDrawColor(220,150,0);doc.setLineWidth(.6);
@@ -1480,16 +1482,30 @@ function buildPDF(){
     doc.setFontSize(9);doc.setFont('helvetica','bold');doc.setTextColor(130,80,0);
     doc.text('KNOCKOUT STAGE',M+6,y+7);y+=14;
 
+    if(cat.mode==='standard'&&cat.semis&&cat.semis.length>0){
+    /* Consolation match if needed */
+    if(cat.needsConsolation&&cat.consolation){
+      const cons=cat.consolation;
+      const cT=cat.startTime?fmtSlotTime(cat.startTime,cat.maxRRSlots):'';
+      doc.setFillColor(245,250,245);doc.setDrawColor(150,200,100);doc.setLineWidth(.5);
+      doc.roundedRect(M,y,CW,14,2,2,'FD');
+      doc.setFontSize(6.5);doc.setFont('helvetica','bold');doc.setTextColor(80,130,60);
+      doc.text('3RD PLACE'+(cT?' · '+cT:''),M+4,y+7);
+      doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(...BK);
+      doc.text(`${cons.p1}   vs   ${cons.p2}`,M+4,y+12);
+      y+=18;
+    }
     const hw=(CW-6)/2;
     [[cat.semis[0],[255,42,122],0],[cat.semis[1],CY,hw+6]].forEach(([semi,sC,ox])=>{
+      const sT=cat.startTime?fmtSlotTime(cat.startTime,cat.maxRRSlots+(cat.needsConsolation?1:0)):'';
       doc.setFillColor(249,252,255);doc.setDrawColor(...sC);doc.setLineWidth(.5);
-      doc.roundedRect(M+ox,y,hw,24,2,2,'FD');
-      doc.setFontSize(6.5);doc.setFont('helvetica','bold');doc.setTextColor(...MU);
-      doc.text(semi.label.toUpperCase(),M+ox+4,y+7);
+      doc.roundedRect(M+ox,y,hw,28,2,2,'FD');
+      doc.setFontSize(6);doc.setFont('helvetica','bold');doc.setTextColor(...MU);
+      doc.text(semi.label.toUpperCase()+(sT?' · '+sT:''),M+ox+3,y+7,{maxWidth:hw-6});
       doc.setFontSize(7.5);doc.setFont('helvetica','normal');doc.setTextColor(...sC);
       doc.text(semi.p1,M+ox+4,y+14);
       doc.setFontSize(6.5);doc.setFont('helvetica','bold');doc.setTextColor(...MU);
-      doc.text('vs',M+ox+hw/2,y+18.5,{align:'center'});
+      doc.text('vs',M+ox+hw/2,y+19.5,{align:'center'});
       doc.setFontSize(7.5);doc.setFont('helvetica','normal');doc.setTextColor(...sC);
       doc.text(semi.p2,M+ox+4,y+23);
     });y+=30;
@@ -1498,11 +1514,13 @@ function buildPDF(){
     doc.setFillColor(255,249,215);doc.setDrawColor(220,150,0);doc.setLineWidth(1);
     doc.roundedRect(M,y,CW,22,3,3,'FD');
     doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(130,80,0);
-    doc.text('FINAL  BEE OF THE COURT!',M+6,y+9);
+    const fT3=cat.startTime?fmtSlotTime(cat.startTime,cat.maxRRSlots+(cat.needsConsolation?2:1)):'';
+    doc.text('FINAL  BEE OF THE COURT!'+(fT3?' · '+fT3:''),M+6,y+9);
     doc.setFontSize(9);doc.setFont('helvetica','normal');doc.setTextColor(...BK);
     doc.text(`${cat.final.p1}    vs    ${cat.final.p2}`,M+6,y+18);
     y+=26;
-  });
+    } /* end knockout standard */
+  }); /* end category forEach */
 
   footer();
   doc.save(`PickleBee_DUPR_Draw_${d.mode}_${new Date().toISOString().slice(0,10)}.pdf`);
@@ -1510,92 +1528,53 @@ function buildPDF(){
 
 
 /* ── Keyboard Navigation ──────────────────────────────
-   Enter / Tab move between Name → DUPR Rating fields.
-   Enter on the last field of a row adds the next entry
-   and focuses the new name field automatically.
+   Enter on P1 → moves to P2 in same row.
+   Enter on P2 → moves to next pair's P1, or adds a new pair.
 ──────────────────────────────────────────────────────── */
 function navKey(e, el){
-  // Tab: native browser behaviour — no interception
-  // Enter: smart field-to-field navigation
+  // Tab: native browser navigation — no interception
+  // Enter: P1 → P2 → add next pair in same category
   if(e.key !== 'Enter') return;
   e.preventDefault();
 
-  const fld = el.dataset.fld;
-  const id  = parseInt(el.dataset.id);
+  const fld    = el.dataset.fld;
+  const id     = parseInt(el.dataset.id);
+  const catKey = el.dataset.cat;
+  const list   = S.cats[catKey];
+  const idx    = list.findIndex(x=>x.id===id);
+  const next   = list[idx+1];
+  const limit  = CATS[catKey].limit;
 
-  // Helper: find the index of the current entry in S.entries
-  const entryIdx = S.entries.findIndex(x => x.id === id);
-  const nextEntry = S.entries[entryIdx + 1]; // undefined if last
+  if(fld === 'p1'){
+    // Enter on P1 → jump to P2 in same row
+    const p2 = el.closest('.d-row').querySelector('[data-fld="p2"]');
+    if(p2) p2.focus();
 
-  if(S.mode === 'singles'){
-    if(fld === 'sname'){
-      // Enter on name → jump to DUPR Rating in same row
-      const ratingEl = el.closest('.s-row').querySelector('[data-fld="srating"]');
-      if(ratingEl){ ratingEl.focus(); ratingEl.select(); }
-
-    } else if(fld === 'srating'){
-      if(nextEntry){
-        // There is a next player → jump to their name field
-        requestAnimationFrame(()=>{
-          const all = document.querySelectorAll('[data-fld="sname"]');
-          const next = Array.from(all).find(el => parseInt(el.dataset.id) === nextEntry.id);
-          if(next) next.focus();
-        });
-      } else {
-        // No next player → add new one and focus its name
-        if(S.entries.length < LIMIT || S.entries[entryIdx].lm){
-          addEntry();
-        } else {
-          addEntry(true); // last-minute
-        }
-        requestAnimationFrame(()=>{
-          const rows = document.querySelectorAll('[data-fld="sname"]');
-          if(rows.length) rows[rows.length-1].focus();
-        });
-      }
-    }
-
-  } else {
-    // Doubles
-    if(fld === 'p1name'){
-      const r = el.closest('.d-row').querySelector('[data-fld="p1rating"]');
-      if(r){ r.focus(); r.select(); }
-
-    } else if(fld === 'p1rating'){
-      // Always move to P2 name in same row
-      const p2n = el.closest('.d-row').querySelector('[data-fld="p2name"]');
-      if(p2n){ p2n.focus(); }
-
-    } else if(fld === 'p2name'){
-      const r = el.closest('.d-row').querySelector('[data-fld="p2rating"]');
-      if(r){ r.focus(); r.select(); }
-
-    } else if(fld === 'p2rating'){
-      if(nextEntry){
-        // Jump to next pair's P1 name
-        requestAnimationFrame(()=>{
-          const all = document.querySelectorAll('[data-fld="p1name"]');
-          const next = Array.from(all).find(el => parseInt(el.dataset.id) === nextEntry.id);
-          if(next) next.focus();
-        });
-      } else {
-        // No next pair → add new one and focus its P1 name
-        if(S.entries.length < LIMIT || S.entries[entryIdx].lm){
-          addEntry();
-        } else {
-          addEntry(true);
-        }
-        requestAnimationFrame(()=>{
-          const rows = document.querySelectorAll('[data-fld="p1name"]');
-          if(rows.length) rows[rows.length-1].focus();
-        });
-      }
+  } else if(fld === 'p2'){
+    if(next){
+      // Jump to next pair's P1
+      requestAnimationFrame(()=>{
+        const all  = $('list-'+catKey).querySelectorAll('[data-fld="p1"]');
+        const nxt  = Array.from(all).find(x=>parseInt(x.dataset.id)===next.id);
+        if(nxt) nxt.focus();
+      });
+    } else {
+      // Last pair in category → add new one
+      addEntry(catKey, list.length >= limit);
+      requestAnimationFrame(()=>{
+        const all = $('list-'+catKey).querySelectorAll('[data-fld="p1"]');
+        if(all.length) all[all.length-1].focus();
+      });
     }
   }
 }
 
 /* ── Init ── */
-(function(){for(let i=0;i<4;i++)addEntry();clrAlert()})();
+(function(){
+  // Seed 2 empty rows in each category so the UI feels ready
+  CAT_KEYS.forEach(k=>{ addEntry(k); addEntry(k); });
+  clrAlert();
+})();
 </script>
 </body>
 </html>
